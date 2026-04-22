@@ -397,7 +397,7 @@ function MateriaSelectScreen({ onSelect }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://localhost:3001/api/game-materias")
+    fetch("/api/game-materias")
       .then(res => res.json())
       .then(data => {
         setMaterias(data);
@@ -468,7 +468,7 @@ export default function GameViewWrapper() {
   const handleSelectMateria = (materiaId) => {
     setSelectedMateria(materiaId);
     setLoading(true);
-    fetch(`http://localhost:3001/api/game-data/${materiaId}`)
+    fetch(`/api/game-data/${materiaId}`)
       .then(res => res.json())
       .then(data => {
         setGameData(data);

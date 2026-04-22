@@ -19,7 +19,7 @@ export default function PreguntasManager() {
   });
 
   const fetchMaterias = () => {
-    fetch("http://localhost:3001/api/materias")
+    fetch("/api/materias")
       .then(res => res.json())
       .then(data => {
         setMaterias(data);
@@ -31,7 +31,7 @@ export default function PreguntasManager() {
 
   const fetchTemas = () => {
     if (!selectedMateria) return;
-    fetch(`http://localhost:3001/api/temas?materia_id=${selectedMateria}`)
+    fetch(`/api/temas?materia_id=${selectedMateria}`)
       .then(res => res.json())
       .then(data => {
         setTemas(data);
@@ -49,7 +49,7 @@ export default function PreguntasManager() {
   const fetchQuestions = () => {
     if (!selectedTema) { setQuestions([]); setLoading(false); return; }
     setLoading(true);
-    fetch(`http://localhost:3001/api/questions?tema_id=${selectedTema}`)
+    fetch(`/api/questions?tema_id=${selectedTema}`)
       .then(res => res.json())
       .then(data => {
         setQuestions(data);
@@ -91,8 +91,8 @@ export default function PreguntasManager() {
     e.preventDefault();
     const isEditing = editingId !== null;
     const url = isEditing
-      ? `http://localhost:3001/api/questions/${editingId}`
-      : `http://localhost:3001/api/questions`;
+      ? `/api/questions/${editingId}`
+      : `/api/questions`;
 
     fetch(url, {
       method: isEditing ? 'PUT' : 'POST',
@@ -123,7 +123,7 @@ export default function PreguntasManager() {
 
   const handleDelete = (id) => {
     if (window.confirm("¿Seguro que deseas eliminar esta pregunta?")) {
-      fetch(`http://localhost:3001/api/questions/${id}`, {
+      fetch(`/api/questions/${id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('admin_token')}`

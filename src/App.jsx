@@ -31,7 +31,7 @@ function AdminLogin() {
     setLoading(true);
 
     try {
-      const res = await fetch("http://localhost:3001/api/login", {
+      const res = await fetch("/api/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password })
@@ -125,7 +125,7 @@ function AdminDashboard({ darkMode, setDarkMode }) {
   };
 
   const fetchStats = () => {
-    fetch("http://localhost:3001/api/game-data")
+    fetch("/api/game-data")
       .then(res => res.json())
       .then(data => {
         let materias = data.stations ? data.stations.length : 0;

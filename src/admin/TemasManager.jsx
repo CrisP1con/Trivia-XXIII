@@ -20,7 +20,7 @@ export default function TemasManager() {
   const [uploading, setUploading] = useState(false);
 
   const fetchMaterias = () => {
-    fetch("http://localhost:3001/api/materias")
+    fetch("/api/materias")
       .then(res => res.json())
       .then(data => {
         setMaterias(data);
@@ -33,7 +33,7 @@ export default function TemasManager() {
   const fetchTemas = () => {
     if (!selectedMateria) { setLoading(false); return; }
     setLoading(true);
-    fetch(`http://localhost:3001/api/temas?materia_id=${selectedMateria}`)
+    fetch(`/api/temas?materia_id=${selectedMateria}`)
       .then(res => res.json())
       .then(data => {
         setTemas(data);
@@ -78,7 +78,7 @@ export default function TemasManager() {
       uploadData.append('video', videoFile);
 
       try {
-        const res = await fetch("http://localhost:3001/api/upload-video", {
+        const res = await fetch("/api/upload-video", {
           method: "POST",
           headers: { 
             'Authorization': `Bearer ${localStorage.getItem('admin_token')}` 
@@ -105,8 +105,8 @@ export default function TemasManager() {
 
     const isEditing = editingId !== null;
     const url = isEditing
-      ? `http://localhost:3001/api/temas/${editingId}`
-      : `http://localhost:3001/api/temas`;
+      ? `/api/temas/${editingId}`
+      : `/api/temas`;
 
     fetch(url, {
       method: isEditing ? 'PUT' : 'POST',
@@ -140,7 +140,7 @@ export default function TemasManager() {
 
   const handleDelete = (id) => {
     if (window.confirm("¿Seguro que deseas eliminar este tema? Se eliminarán también sus preguntas.")) {
-      fetch(`http://localhost:3001/api/temas/${id}`, {
+      fetch(`/api/temas/${id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('admin_token')}`

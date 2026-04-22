@@ -13,7 +13,7 @@ export default function MateriasManager() {
 
   const fetchMaterias = () => {
     setLoading(true);
-    fetch("http://localhost:3001/api/materias")
+    fetch("/api/materias")
       .then(res => res.json())
       .then(data => {
         setMaterias(data);
@@ -39,8 +39,8 @@ export default function MateriasManager() {
     e.preventDefault();
     const isEditing = editingId !== null;
     const url = isEditing
-      ? `http://localhost:3001/api/materias/${editingId}`
-      : `http://localhost:3001/api/materias`;
+      ? `/api/materias/${editingId}`
+      : `/api/materias`;
 
     fetch(url, {
       method: isEditing ? 'PUT' : 'POST',
@@ -66,7 +66,7 @@ export default function MateriasManager() {
 
   const handleDelete = (id) => {
     if (window.confirm("¿Seguro que deseas eliminar esta materia? Se eliminarán también sus temas y preguntas.")) {
-      fetch(`http://localhost:3001/api/materias/${id}`, {
+      fetch(`/api/materias/${id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('admin_token')}`

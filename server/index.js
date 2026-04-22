@@ -334,6 +334,19 @@ app.get('/api/stations', (req, res) => {
   });
 });
 
+// Servir archivos estáticos del Frontend (Production)
+app.use(express.static(path.join(__dirname, '../dist')));
+
+// Manejar cualquier otra ruta devolviendo el index.html del frontend (para React Router)
+app.get(/.*/, (req, res) => {
+  // Solo si no es una ruta de API que no existe
+  if (!req.url.startsWith('/api')) {
+    res.sendFile(path.join(__dirname, '../dist/index.html'));
+  } else {
+    res.status(404).json({ error: "API route not found" });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Backend funcionando en http://localhost:${PORT}`);
 });
