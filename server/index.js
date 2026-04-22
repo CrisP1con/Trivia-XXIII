@@ -18,6 +18,8 @@ const SECRET_KEY = "super_secreto_para_la_escuela";
 
 app.use(helmet({
   crossOriginResourcePolicy: false,
+  contentSecurityPolicy: false,
+  hsts: false,
 }));
 app.use(cors({
   origin: '*',
