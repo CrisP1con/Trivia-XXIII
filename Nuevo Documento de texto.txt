@@ -1,0 +1,111 @@
+12. Reglas para cualquier IA que edite este proyecto
+Regla 1
+
+No romper el flujo principal:
+
+inicio,
+video,
+preguntas,
+puntaje,
+final.
+Regla 2
+
+No reducir la experiencia a un cuestionario simple.
+
+Regla 3
+
+No reemplazar el estilo institucional por algo genérico.
+
+Regla 4
+
+No agregar dependencias sin motivo fuerte.
+
+Regla 5
+
+Toda mejora debe respetar:
+
+uso táctil,
+lectura a distancia,
+estética 4K,
+uso grupal en aula.
+Regla 6
+
+Si se refactoriza, mantener nombres claros y comentarios útiles.
+
+Regla 7
+
+Si se agregan nuevas funciones, deben integrarse con el contexto escolar.
+
+13. Mejoras deseadas a futuro
+
+Estas son mejoras compatibles con el proyecto:
+
+Prioridad alta
+pantalla final más épica,
+transición más cinematográfica entre bloques,
+más feedback visual por respuesta,
+mejor administración del estado del juego,
+loader inicial institucional.
+Prioridad media
+modo docente,
+selección de temas,
+selección de cantidad de preguntas,
+panel para cargar contenido por JSON,
+persistencia simple de resultados.
+Prioridad baja
+voces en off,
+ranking histórico,
+podio animado,
+mapa interactivo,
+modo multijugador más complejo.
+14. Qué tipo de ayuda se espera de Cursor o AntigravityUI
+
+La IA debe ayudar a:
+
+mejorar UI sin romper estructura,
+ordenar componentes,
+extraer lógica reutilizable,
+optimizar rendimiento,
+preparar el proyecto para Capacitor,
+revisar errores,
+mantener coherencia visual,
+proponer mejoras pedagógicas coherentes con el proyecto.
+
+La IA no debe:
+
+reinventar todo el proyecto,
+cambiar de stack sin pedirlo,
+convertirlo en otra cosa,
+borrar el tono institucional.
+15. Prompt base sugerido para usar con IA
+
+Usar este contexto al pedir cambios:
+
+Este proyecto es una app educativa interactiva de Historia Argentina para pantalla táctil 4K Android, destinada a secundaria, con identidad institucional del Instituto Juan XXIII. Usa React + Vite + CSS propio + Framer Motion. Tiene modo equipos rojo/azul, videos por bloque histórico, preguntas táctiles, cronómetro y pantalla final. Quiero que toda mejora respete la experiencia inmersiva, el uso escolar, el formato táctil y la estética institucional. No cambies de framework ni simplifiques la experiencia a un formulario o quiz genérico.
+
+16. Definición de éxito
+
+El proyecto estará bien logrado si:
+
+se ve excelente en una pantalla grande,
+los alumnos entienden cómo jugar sin explicación compleja,
+los docentes pueden usarlo con facilidad,
+la experiencia resulta dinámica,
+el colegio siente que la app tiene identidad propia,
+visualmente parece un desarrollo profesional y no una maqueta improvisada.
+17. Nota final
+
+Este proyecto no busca solamente enseñar fechas.
+Busca transformar la clase en una experiencia.
+
+Debe tener:
+
+claridad,
+ritmo,
+belleza,
+contenido,
+memoria,
+presencia institucional.
+
+La historia argentina no debe sentirse muerta dentro de la app.
+Debe sentirse viva.
