@@ -211,7 +211,7 @@ video {
 }
 
 .brand-logo {
-  height: 56px;
+  height: clamp(36px, 6vw, 56px);
   width: auto;
 }
 
@@ -322,7 +322,7 @@ video {
 
 .turn-title {
   margin: 0 0 6px;
-  font-size: clamp(1.6rem, 3.5vw, 3rem);
+  font-size: clamp(1.2rem, 3.5vw, 3rem); /* Reducido para mejor armonía */
   font-weight: 900;
 }
 
@@ -468,17 +468,119 @@ video {
 }
 
 @media (max-width: 980px) {
-  .score-row,
-  .final-score-grid,
-  .options-grid {
+  .final-score-grid {
     grid-template-columns: 1fr;
   }
 
+  .options-grid {
+    grid-template-columns: repeat(2, 1fr) !important; /* Forzar 2 columnas en móvil */
+    gap: 10px !important;
+  }
+
   .meta-grid {
-    width: 100%;
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important; 
+    width: 100% !important;
+    gap: 4px !important;
   }
 
   .meta-box {
-    flex: 1 1 180px;
+    padding: 4px 2px;
+    font-size: 0.7rem;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .score-row {
+    display: grid !important;
+    grid-template-columns: 1fr 1.5fr 1fr !important; 
+    gap: 4px !important;
+    margin-top: 6px !important;
+  }
+
+  .team-card, .turn-card {
+    padding: 8px 4px;
+    font-size: 0.9rem;
+  }
+
+  .panel {
+    padding: 14px 18px;
+  }
+
+  .option-btn {
+    min-height: 64px;
+    padding: 12px 16px;
+  }
+}
+
+@media (max-width: 640px) {
+  .scoreboard {
+    padding: 8px 12px;
+  }
+  
+  .brand-logo {
+    height: 32px;
+  }
+
+  .brand-title {
+    font-size: 1.1rem;
+  }
+  
+  .brand-subtitle {
+    display: none;
+  }
+
+  .meta-box {
+    padding: 4px 2px;
+    font-size: 0.65rem;
+  }
+
+  .score-row {
+    grid-template-columns: 1fr 1.4fr 1fr;
+    gap: 4px;
+  }
+
+  .team-card, .turn-card {
+    padding: 4px 2px;
+    font-size: 0.6rem;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .station-name {
+    margin-top: 6px;
+    font-size: 1rem;
+  }
+
+  .question-container {
+    padding: 8px 12px;
+  }
+
+  .question-prompt {
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+  }
+
+  .turn-title {
+    font-size: 1.3rem !important;
+  }
+
+  .panel-text {
+    font-size: 0.85rem;
+  }
+
+  .section-kicker {
+    font-size: 0.75rem;
+    margin-bottom: 6px;
+  }
+
+  .option-btn {
+    min-height: 54px !important;
+    font-size: 0.85rem !important;
+    padding: 8px 12px !important;
   }
 }

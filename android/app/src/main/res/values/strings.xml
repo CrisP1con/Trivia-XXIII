@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Historia Juan XXIII</string>
+    <string name="title_activity_main">Historia Juan XXIII</string>
+    <string name="package_name">com.juan23.historia</string>
+    <string name="custom_url_scheme">com.juan23.historia</string>
+</resources>

@@ -1,0 +1,16 @@
+{
+  "short_name": "Historia J23",
+  "name": "Instituto Juan XXIII - Juego de Historia",
+  "icons": [
+    {
+      "src": "logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#0a0a0a",
+  "background_color": "#0a0a0a"
+}
