@@ -4,10 +4,16 @@ import path from 'path';
 import bcrypt from 'bcrypt';
 import { fileURLToPath } from 'url';
 
+import dotenv from 'dotenv';
+dotenv.config();
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const dbPath = path.resolve(__dirname, 'database.sqlite');
+// Usar ruta desde .env o fallback al default
+const dbPath = process.env.DATABASE_PATH 
+  ? path.resolve(process.env.DATABASE_PATH)
+  : path.resolve(__dirname, 'database.sqlite');
 
 const db = new sqlite3.Database(dbPath, (err) => {
   if (err) {
@@ -104,12 +110,15 @@ function initDb() {
       }
     });
 
-    // Crear un usuario admin por defecto si no existe
-    db.get("SELECT id FROM users WHERE username = 'admin'", async (err, row) => {
+    // Crear un usuario admin por defecto si no existe (usando credenciales de .env)
+    const defaultUser = process.env.ADMIN_USER || 'admin';
+    const defaultPass = process.env.ADMIN_PASS || '123456';
+
+    db.get("SELECT id FROM users WHERE username = ?", [defaultUser], async (err, row) => {
       if (!row) {
-        const hash = await bcrypt.hash('123456', 10);
-        db.run("INSERT INTO users (username, password) VALUES ('admin', ?)", [hash]);
-        console.log("Usuario por defecto creado: admin / 123456");
+        const hash = await bcrypt.hash(defaultPass, 10);
+        db.run("INSERT INTO users (username, password) VALUES (?, ?)", [defaultUser, hash]);
+        console.log(`[Seguridad]: Usuario por defecto creado/verificado: ${defaultUser}`);
       }
     });
   });

@@ -206,6 +206,7 @@
   text-transform: uppercase;
   letter-spacing: 0.05em;
   border-bottom: 1px solid var(--border-color);
+  text-align: left; /* Asegurar alineación izquierda por defecto */
 }
 
 .admin-table td {
@@ -217,6 +218,23 @@
 
 .admin-table tr:hover td {
   background: var(--bg-color);
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.admin-table th.text-right {
+  text-align: right;
+  padding-right: 20px;
+}
+
+.admin-table td.text-right div {
+  justify-content: flex-end;
 }
 
 /* FORM ELEMENTS */
@@ -354,3 +372,206 @@
 .admin-form-group {
   margin-bottom: 24px;
 }
+
+/* =============================================
+   BOTONES PEQUEÑOS PARA TABLAS
+   ============================================= */
+.admin-btn-small {
+  padding: 6px 14px;
+  font-size: 0.82rem;
+}
+
+/* =============================================
+   HAMBURGER - Oculto en desktop
+   ============================================= */
+.admin-hamburger {
+  display: none;
+  background: var(--bg-color);
+  border: 1px solid var(--border-color);
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  color: var(--text-muted);
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+
+.admin-hamburger:hover {
+  background: var(--border-color);
+}
+
+/* Overlay oscuro detrás del sidebar en móvil */
+.admin-sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  z-index: 99;
+  backdrop-filter: blur(4px);
+}
+
+.admin-sidebar-overlay.open {
+  display: block;
+}
+
+/* =============================================
+   RESPONSIVE: TABLET Y MÓVIL (≤ 768px)
+   ============================================= */
+@media (max-width: 768px) {
+
+  .admin-hamburger {
+    display: flex;
+  }
+
+  .admin-sidebar {
+    position: fixed;
+    left: -280px;
+    top: 0;
+    bottom: 0;
+    width: 260px;
+    z-index: 100;
+    transition: left 0.3s ease;
+    overflow-y: auto;
+    box-shadow: 4px 0 24px rgba(0,0,0,0.3);
+  }
+
+  .admin-sidebar.open {
+    left: 0;
+  }
+
+  .admin-container {
+    flex-direction: column;
+  }
+
+  .admin-main {
+    width: 100%;
+    min-height: 100vh;
+  }
+
+  .admin-header {
+    height: 60px;
+    padding: 0 16px;
+  }
+
+  .admin-content {
+    padding: 20px 16px;
+  }
+
+  .admin-section-title {
+    font-size: 1.2rem;
+  }
+
+  .admin-table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .admin-table {
+    min-width: 480px;
+  }
+
+  .admin-card {
+    padding: 16px;
+    border-radius: 14px;
+  }
+
+  .admin-form-group {
+    margin-bottom: 16px;
+  }
+
+  .admin-input {
+    padding: 10px 14px;
+    font-size: 0.9rem;
+  }
+
+  .admin-btn {
+    padding: 9px 16px;
+    font-size: 0.9rem;
+  }
+
+  .admin-modal {
+    width: 96%;
+    border-radius: 16px;
+    max-height: 95vh;
+  }
+
+  .admin-modal-header {
+    padding: 16px;
+  }
+
+  .admin-modal-content {
+    padding: 16px;
+  }
+
+  .admin-modal-title {
+    font-size: 1.1rem;
+  }
+
+  .summary-info h3 {
+    font-size: 1.4rem;
+  }
+}
+
+/* =============================================
+   RESPONSIVE: MÓVIL CHICO (≤ 480px)
+   ============================================= */
+@media (max-width: 480px) {
+
+  .admin-header {
+    padding: 0 12px;
+    height: 56px;
+  }
+
+  .admin-content {
+    padding: 14px 10px;
+  }
+
+  .admin-table th,
+  .admin-table td {
+    padding: 12px 10px;
+    font-size: 0.8rem;
+  }
+
+  .admin-btn {
+    padding: 8px 12px;
+    font-size: 0.82rem;
+  }
+
+  .admin-btn-small {
+    padding: 5px 10px;
+    font-size: 0.75rem;
+  }
+
+  .admin-section-title {
+    font-size: 1.1rem;
+  }
+
+  .admin-card {
+    padding: 12px;
+    border-radius: 12px;
+  }
+
+  .admin-input {
+    padding: 9px 12px;
+    font-size: 0.88rem;
+  }
+
+  .admin-modal {
+    border-radius: 12px;
+  }
+
+  .admin-modal-header,
+  .admin-modal-content {
+    padding: 12px;
+  }
+
+  /* En móvil, las opciones del modal de preguntas pasan a 1 columna */
+  .preguntas-options-grid {
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+  }
+}
+

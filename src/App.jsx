@@ -2,13 +2,13 @@ import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import { 
   LayoutDashboard, BookOpen, HelpCircle, FolderOpen,
-  Moon, Sun, Database, Server,
-  PlayCircle, Layers, LogOut, Lock
+  Moon, Sun, PlayCircle, Layers, LogOut, Lock, Settings, Menu, X
 } from "lucide-react";
 import GameView from "./game/GameView";
 import MateriasManager from "./admin/MateriasManager";
 import TemasManager from "./admin/TemasManager";
 import PreguntasManager from "./admin/PreguntasManager";
+import ConfigManager from "./admin/ConfigManager";
 import "./admin.css";
 
 function AdminLogin() {
@@ -68,7 +68,7 @@ function AdminLogin() {
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                placeholder="admin"
+                placeholder="Ingresá tu usuario"
                 className="admin-input"
                 required
                 autoFocus
@@ -109,6 +109,7 @@ function AdminDashboard({ darkMode, setDarkMode }) {
   const [currentView, setCurrentView] = useState("dashboard");
   const [stats, setStats] = useState({ materias: 0, videos: 0, preguntas: 0 });
   const [loading, setLoading] = useState(true);
+  const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
 
   // Verificar autenticación
@@ -146,30 +147,45 @@ function AdminDashboard({ darkMode, setDarkMode }) {
     }
   }, [currentView]);
 
+  const handleNavClick = (view) => {
+    setCurrentView(view);
+    setMenuOpen(false); // cerrar sidebar en móvil al navegar
+  };
+
   return (
     <div className="admin-container">
+      {/* Overlay para cerrar sidebar en móvil */}
+      <div
+        className={`admin-sidebar-overlay ${menuOpen ? 'open' : ''}`}
+        onClick={() => setMenuOpen(false)}
+      />
+
       {/* Sidebar */}
-      <div className="admin-sidebar">
+      <div className={`admin-sidebar ${menuOpen ? 'open' : ''}`}>
         <div className="admin-brand" style={{ justifyContent: 'center', margin: '20px 0 40px 0' }}>
           <img src="/logo.png" alt="Instituto Juan XXIII" style={{ maxHeight: '110px', maxWidth: '100%' }} />
         </div>
 
         <ul className="admin-nav-list">
-          <li className={`admin-nav-item ${currentView === "dashboard" ? "active" : ""}`} onClick={() => setCurrentView("dashboard")}>
+          <li className={`admin-nav-item ${currentView === "dashboard" ? "active" : ""}`} onClick={() => handleNavClick("dashboard")}>
             <LayoutDashboard size={20} />
             Dashboard
           </li>
-          <li className={`admin-nav-item ${currentView === "materias" ? "active" : ""}`} onClick={() => setCurrentView("materias")}>
+          <li className={`admin-nav-item ${currentView === "materias" ? "active" : ""}`} onClick={() => handleNavClick("materias")}>
             <BookOpen size={20} />
             Materias
           </li>
-          <li className={`admin-nav-item ${currentView === "temas" ? "active" : ""}`} onClick={() => setCurrentView("temas")}>
+          <li className={`admin-nav-item ${currentView === "temas" ? "active" : ""}`} onClick={() => handleNavClick("temas")}>
             <FolderOpen size={20} />
             Temas
           </li>
-          <li className={`admin-nav-item ${currentView === "preguntas" ? "active" : ""}`} onClick={() => setCurrentView("preguntas")}>
+          <li className={`admin-nav-item ${currentView === "preguntas" ? "active" : ""}`} onClick={() => handleNavClick("preguntas")}>
             <HelpCircle size={20} />
             Preguntas
+          </li>
+          <li className={`admin-nav-item ${currentView === "config" ? "active" : ""}`} onClick={() => handleNavClick("config")}>
+            <Settings size={20} />
+            Configuración
           </li>
         </ul>
       </div>
@@ -178,9 +194,17 @@ function AdminDashboard({ darkMode, setDarkMode }) {
       <div className="admin-main">
         {/* Header */}
         <div className="admin-header">
-          <div className="admin-top-nav">
-            {/* Vacío según instrucciones, mantenemos la estructura por si se necesitan breadcrumbs luego */}
-          </div>
+          {/* Botón hamburguesa - solo visible en móvil via CSS */}
+          <button
+            className="admin-hamburger"
+            onClick={() => setMenuOpen(!menuOpen)}
+            title="Abrir menú"
+          >
+            {menuOpen ? <X size={20} /> : <Menu size={20} />}
+          </button>
+
+          <div className="admin-top-nav" />
+
           <div className="admin-header-actions">
             <button className="admin-icon-btn" onClick={() => setDarkMode(!darkMode)} title={darkMode ? "Activar modo claro" : "Activar modo oscuro"}>
               {darkMode ? <Sun size={18} /> : <Moon size={18} />}
@@ -260,6 +284,7 @@ function AdminDashboard({ darkMode, setDarkMode }) {
              {currentView === "materias" && <MateriasManager />}
              {currentView === "temas" && <TemasManager />}
              {currentView === "preguntas" && <PreguntasManager />}
+             {currentView === "config" && <ConfigManager />}
           </div>
         </div>
       </div>

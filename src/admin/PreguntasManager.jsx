@@ -186,7 +186,7 @@ export default function PreguntasManager() {
           {/* Modal */}
           {isModalOpen && (
             <div className="admin-modal-overlay">
-              <div className="admin-modal">
+            <div className="admin-modal" style={{ maxWidth: "650px" }}>
                 <div className="admin-modal-header">
                   <h3 className="admin-modal-title">{editingId ? "Editar Pregunta" : "Nueva Pregunta"}</h3>
                   <button onClick={() => setIsModalOpen(false)} className="admin-modal-close" style={{ fontSize: "1.5rem" }}>&times;</button>
@@ -206,7 +206,7 @@ export default function PreguntasManager() {
                     </div>
 
                     <label style={{ color: "#6C7293", fontSize: "0.8rem", marginBottom: "6px", display: "block" }}>Opciones (marcá la correcta)</label>
-                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", marginBottom: "16px" }}>
+                    <div className="preguntas-options-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", marginBottom: "16px" }}>
                       {formData.options.map((opt, i) => (
                         <div key={i} style={{ 
                           display: "flex", 
@@ -217,8 +217,9 @@ export default function PreguntasManager() {
                           borderRadius: "10px", 
                           border: formData.answer == i ? "2px solid #5051F9" : "1px solid #E2E8F0" 
                         }}>
-                          <input type="radio" name="answer" value={i} checked={formData.answer == i} onChange={handleInputChange} style={{ width: "18px", height: "18px", cursor: "pointer", accentColor: "#5051F9" }} />
-                          <input value={opt} onChange={(e) => handleOptionChange(i, e.target.value)} placeholder={`Opción ${String.fromCharCode(65 + i)}`} style={{ flex: 1, padding: "8px", background: "transparent", border: "none", color: "#1E293B", outline: "none", fontFamily: "'Inter', sans-serif" }} required />
+                          <input type="radio" name="answer" value={i} checked={formData.answer == i} onChange={handleInputChange} style={{ width: "18px", height: "18px", cursor: "pointer", accentColor: "#5051F9", flexShrink: 0 }} />
+                          <span style={{ color: "#5051F9", fontWeight: "700", fontSize: "0.8rem", flexShrink: 0 }}>{String.fromCharCode(65 + i)}.</span>
+                          <input value={opt} onChange={(e) => handleOptionChange(i, e.target.value)} placeholder={`Opción ${String.fromCharCode(65 + i)}`} style={{ flex: 1, padding: "4px 0", background: "transparent", border: "none", color: "#1E293B", outline: "none", fontFamily: "'Inter', sans-serif", fontSize: "0.9rem" }} required />
                         </div>
                       ))}
                     </div>
@@ -251,7 +252,7 @@ export default function PreguntasManager() {
                     <tr>
                       <th>Pregunta</th>
                       <th>Respuesta correcta</th>
-                      <th style={{ width: "150px" }}>Acciones</th>
+                      <th className="text-right" style={{ width: "200px" }}>Acciones</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -259,7 +260,7 @@ export default function PreguntasManager() {
                       <tr key={q.id}>
                         <td style={{ fontWeight: "500", color: "var(--text-main)" }}>{q.prompt}</td>
                         <td style={{ color: "#5051F9", fontWeight: "600" }}>{q.options[q.answer] || `Opción ${q.answer}`}</td>
-                        <td>
+                        <td className="text-right">
                           <div style={{ display: "flex", gap: "10px" }}>
                             <button onClick={() => handleEdit(q)} className="admin-btn admin-btn-secondary admin-btn-small">Editar</button>
                             <button onClick={() => handleDelete(q.id)} className="admin-btn admin-btn-danger admin-btn-small">Borrar</button>

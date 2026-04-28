@@ -246,19 +246,19 @@ export default function TemasManager() {
               <table className="admin-table">
                 <thead>
                   <tr>
-                    <th>Orden</th>
+                    <th className="text-center" style={{ width: "80px" }}>Orden</th>
                     <th>Título</th>
                     <th>Video</th>
-                    <th>Acciones</th>
+                    <th className="text-right" style={{ width: "200px" }}>Acciones</th>
                   </tr>
                 </thead>
                 <tbody>
                   {temas.map(t => (
                     <tr key={t.id}>
-                      <td>{t.orden}</td>
+                      <td className="text-center">{t.orden}</td>
                       <td style={{ fontWeight: "bold", color: "var(--text-main)" }}>{t.titulo}</td>
                       <td style={{ color: "#6C7293" }}>{t.video || "Sin video"}</td>
-                      <td>
+                      <td className="text-right">
                         <div style={{ display: "flex", gap: "10px" }}>
                           <button onClick={() => handleEdit(t)} className="admin-btn admin-btn-secondary admin-btn-small">Editar</button>
                           <button onClick={() => handleDelete(t.id)} className="admin-btn admin-btn-danger admin-btn-small">Borrar</button>

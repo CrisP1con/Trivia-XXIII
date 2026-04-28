@@ -116,17 +116,17 @@ export default function MateriasManager() {
           <table className="admin-table">
             <thead>
               <tr>
-                <th>Orden</th>
+                <th className="text-center" style={{ width: "80px" }}>Orden</th>
                 <th>Nombre</th>
-                <th>Acciones</th>
+                <th className="text-right" style={{ width: "200px" }}>Acciones</th>
               </tr>
             </thead>
             <tbody>
               {materias.map(m => (
                 <tr key={m.id}>
-                  <td>{m.orden}</td>
+                  <td className="text-center">{m.orden}</td>
                   <td style={{ fontWeight: "bold", color: "var(--text-main)" }}>{m.nombre}</td>
-                  <td>
+                  <td className="text-right">
                     <div style={{ display: "flex", gap: "10px" }}>
                       <button onClick={() => handleEdit(m)} className="admin-btn admin-btn-secondary admin-btn-small">Editar</button>
                       <button onClick={() => handleDelete(m.id)} className="admin-btn admin-btn-danger admin-btn-small">Borrar</button>
