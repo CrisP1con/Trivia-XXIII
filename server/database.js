@@ -1,127 +1,107 @@
-import sqlite3Pkg from 'sqlite3';
-const sqlite3 = sqlite3Pkg.verbose();
-import path from 'path';
+import mysql from 'mysql2/promise';
 import bcrypt from 'bcrypt';
-import { fileURLToPath } from 'url';
-
 import dotenv from 'dotenv';
 dotenv.config();
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-// Usar ruta desde .env o fallback al default
-const dbPath = process.env.DATABASE_PATH 
-  ? path.resolve(process.env.DATABASE_PATH)
-  : path.resolve(__dirname, 'database.sqlite');
-
-const db = new sqlite3.Database(dbPath, (err) => {
-  if (err) {
-    console.error('Error al conectar con SQLite:', err.message);
-  } else {
-    console.log('Conectado a la base de datos SQLite.');
-    initDb();
-  }
+const pool = mysql.createPool({
+  host:     process.env.DB_HOST || 'localhost',
+  port:     parseInt(process.env.DB_PORT) || 3306,
+  user:     process.env.DB_USER || 'root',
+  password: process.env.DB_PASS || '',
+  database: process.env.DB_NAME || 'historia_app',
+  waitForConnections: true,
+  connectionLimit: 10,
+  charset: 'utf8mb4',
+  timezone: '+00:00'
 });
 
-function initDb() {
-  db.serialize(() => {
-    // Tabla de usuarios (Admin)
-    db.run(`CREATE TABLE IF NOT EXISTS users (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      username TEXT UNIQUE,
-      password TEXT
-    )`);
+async function initDb() {
+  try {
+    // --- Tabla: users ---
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS users (
+        id       INT AUTO_INCREMENT PRIMARY KEY,
+        username VARCHAR(100) NOT NULL UNIQUE,
+        password VARCHAR(255) NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    `);
 
-    // Tabla de materias (nivel 1: Historia, Matemáticas, Lengua, etc.)
-    db.run(`CREATE TABLE IF NOT EXISTS materias (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      nombre TEXT,
-      orden INTEGER DEFAULT 0
-    )`);
+    // --- Tabla: materias (nivel 1) ---
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS materias (
+        id     INT AUTO_INCREMENT PRIMARY KEY,
+        nombre VARCHAR(255) NOT NULL,
+        orden  INT NOT NULL DEFAULT 0
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    `);
 
-    // Tabla de temas (nivel 2: dentro de una materia, ej: "Revolución de Mayo")
-    db.run(`CREATE TABLE IF NOT EXISTS temas (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      materia_id INTEGER,
-      titulo TEXT,
-      video TEXT,
-      texto_puente TEXT,
-      orden INTEGER DEFAULT 0,
-      FOREIGN KEY (materia_id) REFERENCES materias (id)
-    )`);
+    // --- Tabla: temas (nivel 2) ---
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS temas (
+        id          INT AUTO_INCREMENT PRIMARY KEY,
+        materia_id  INT NOT NULL,
+        titulo      VARCHAR(500) NOT NULL,
+        video       VARCHAR(1000) DEFAULT '',
+        texto_puente TEXT,
+        orden       INT NOT NULL DEFAULT 0,
+        INDEX idx_temas_materia (materia_id),
+        CONSTRAINT fk_temas_materia
+          FOREIGN KEY (materia_id) REFERENCES materias(id) ON DELETE CASCADE
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    `);
 
-    // Tabla de preguntas (nivel 3: dentro de un tema)
-    db.run(`CREATE TABLE IF NOT EXISTS questions (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      tema_id INTEGER,
-      prompt TEXT,
-      options TEXT,
-      answer INTEGER,
-      explanation TEXT,
-      FOREIGN KEY (tema_id) REFERENCES temas (id)
-    )`);
+    // --- Tabla: questions (nivel 3) ---
+    // NOTA DE NORMALIZACIÓN: "options" se guarda como JSON (TEXT).
+    // Las opciones no tienen existencia independiente de la pregunta,
+    // siempre son exactamente 4 y se consumen en conjunto.
+    // Esto es una desnormalización intencional (justificada).
+    // La FK ON DELETE CASCADE evita huérfanos sin lógica manual en la app.
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS questions (
+        id          INT AUTO_INCREMENT PRIMARY KEY,
+        tema_id     INT NOT NULL,
+        prompt      TEXT NOT NULL,
+        options     TEXT NOT NULL COMMENT 'JSON array con las 4 opciones',
+        answer      INT NOT NULL DEFAULT 0 COMMENT 'Índice 0-3 de la opción correcta',
+        explanation TEXT,
+        INDEX idx_questions_tema (tema_id),
+        CONSTRAINT fk_questions_tema
+          FOREIGN KEY (tema_id) REFERENCES temas(id) ON DELETE CASCADE
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    `);
 
-    // Migrar datos de stations viejas si existen
-    db.get("SELECT name FROM sqlite_master WHERE type='table' AND name='stations'", (err, row) => {
-      if (row) {
-        // Asegurar que questions tenga la columna tema_id
-        db.run("ALTER TABLE questions ADD COLUMN tema_id INTEGER", (alterErr) => {
-          // Ignorar error si la columna ya existe
-          
-          db.get("SELECT COUNT(*) as count FROM materias", (err, r) => {
-            if (r && r.count === 0) {
-              console.log("Migrando datos de stations al nuevo modelo...");
-              db.run("INSERT INTO materias (nombre, orden) VALUES ('Historia', 1)", function(err) {
-                if (err) return;
-                const materiaId = this.lastID;
-                
-                db.all("SELECT * FROM stations ORDER BY \"order\" ASC", (err, stations) => {
-                  if (!stations || stations.length === 0) return;
-                  
-                  let migrated = 0;
-                  stations.forEach(station => {
-                    db.run(
-                      "INSERT INTO temas (materia_id, titulo, video, texto_puente, orden) VALUES (?, ?, ?, ?, ?)",
-                      [materiaId, station.title, station.video, station.bridge, station.order],
-                      function(err) {
-                        if (err) return;
-                        const temaId = this.lastID;
-                        
-                        // Migrar preguntas de esta station al nuevo tema
-                        db.run(
-                          "UPDATE questions SET tema_id = ? WHERE station_id = ?",
-                          [temaId, station.id],
-                          () => {
-                            migrated++;
-                            if (migrated === stations.length) {
-                              console.log("Migración completada: " + migrated + " temas migrados.");
-                            }
-                          }
-                        );
-                      }
-                    );
-                  });
-                });
-              });
-            }
-          });
-        });
-      }
-    });
+    console.log('[DB]: Tablas MySQL verificadas/creadas correctamente.');
 
-    // Crear un usuario admin por defecto si no existe (usando credenciales de .env)
+    // --- Usuario admin por defecto ---
     const defaultUser = process.env.ADMIN_USER || 'admin';
     const defaultPass = process.env.ADMIN_PASS || '123456';
+    const [rows] = await pool.query('SELECT id FROM users WHERE username = ?', [defaultUser]);
+    if (rows.length === 0) {
+      const hash = await bcrypt.hash(defaultPass, 10);
+      await pool.query('INSERT INTO users (username, password) VALUES (?, ?)', [defaultUser, hash]);
+      console.log(`[Seguridad]: Usuario por defecto creado: ${defaultUser}`);
+    } else {
+      console.log(`[DB]: Usuario '${defaultUser}' ya existe.`);
+    }
 
-    db.get("SELECT id FROM users WHERE username = ?", [defaultUser], async (err, row) => {
-      if (!row) {
-        const hash = await bcrypt.hash(defaultPass, 10);
-        db.run("INSERT INTO users (username, password) VALUES (?, ?)", [defaultUser, hash]);
-        console.log(`[Seguridad]: Usuario por defecto creado/verificado: ${defaultUser}`);
-      }
-    });
-  });
+  } catch (err) {
+    console.error('[DB Error] No se pudo inicializar la base de datos:', err.message);
+    process.exit(1);
+  }
 }
 
-export default db;
+// Conectar y verificar antes de exportar
+pool.getConnection()
+  .then(conn => {
+    console.log('[DB]: Conectado a MySQL correctamente.');
+    conn.release();
+    return initDb();
+  })
+  .catch(err => {
+    console.error('[DB]: Error de conexión a MySQL:', err.message);
+    console.error('Verificá las variables DB_HOST, DB_USER, DB_PASS, DB_NAME en el .env');
+    process.exit(1);
+  });
+
+export default pool;
