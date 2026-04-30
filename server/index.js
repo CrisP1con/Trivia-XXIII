@@ -384,7 +384,18 @@ app.use((err, req, res, next) => {
   res.status(err.status || 500).json({ error: message });
 });
 
-app.listen(PORT, () => {
-  console.log(`Backend funcionando en http://localhost:${PORT}`);
+const server = app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Backend funcionando en http://0.0.0.0:${PORT}`);
   console.log(`Modo: ${process.env.NODE_ENV || 'development'}`);
+});
+
+server.on('error', (err) => {
+  if (err.code === 'EADDRINUSE') {
+    console.error(`[ERROR]: El puerto ${PORT} ya está ocupado.`);
+  } else if (err.code === 'EACCES') {
+    console.error(`[ERROR]: No tienes permisos para usar el puerto ${PORT}.`);
+  } else {
+    console.error(`[ERROR]: No se pudo arrancar el servidor:`, err);
+  }
+  process.exit(1);
 });
