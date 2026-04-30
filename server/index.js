@@ -142,6 +142,11 @@ function authenticateToken(req, res, next) {
   });
 }
 
+// ========== HEALTH CHECK (HEARTBEAT) ==========
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'ok', uptime: process.uptime() });
+});
+
 // ========== AUTH ==========
 app.post('/api/login', async (req, res) => {
   const { username, password } = req.body;
