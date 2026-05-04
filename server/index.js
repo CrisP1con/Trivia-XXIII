@@ -76,7 +76,9 @@ app.use('/videos', express.static(path.join(__dirname, '../public/videos')));
 
 // ========== VIDEO STREAMING ==========
 app.get('/api/stream-video/:filename', (req, res) => {
-  const videoPath = path.join(__dirname, '../public/videos', req.params.filename);
+  // SEGURIDAD: Prevenir Path Traversal usando path.basename
+  const safeFilename = path.basename(req.params.filename);
+  const videoPath = path.join(__dirname, '../public/videos', safeFilename);
   if (!fs.existsSync(videoPath)) return res.status(404).json({ error: 'Video no encontrado' });
 
   const stat = fs.statSync(videoPath);
@@ -111,13 +113,23 @@ const storage = multer.diskStorage({
   },
   filename: (req, file, cb) => {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
+    // SEGURIDAD: Sanitizar la extensión del archivo para evitar inyección de .php, .html, etc.
+    let ext = path.extname(file.originalname).toLowerCase();
+    const allowedExts = ['.mp4', '.mov', '.webm', '.avi', '.mkv'];
+    if (!allowedExts.includes(ext)) ext = '.mp4'; // Fallback seguro
+    
+    cb(null, file.fieldname + '-' + uniqueSuffix + ext);
   }
 });
 const upload = multer({
   storage,
   fileFilter: (req, file, cb) => {
-    file.mimetype.startsWith('video/') ? cb(null, true) : cb(new Error('Solo videos.'));
+    // SEGURIDAD: Verificar el mimetype
+    if (file.mimetype.startsWith('video/')) {
+      cb(null, true);
+    } else {
+      cb(new Error('El archivo debe ser un formato de video válido.'));
+    }
   },
   limits: { fileSize: 500 * 1024 * 1024 }
 });
