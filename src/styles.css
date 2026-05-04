@@ -584,3 +584,141 @@ video {
     padding: 8px 12px !important;
   }
 }
+
+/* Optimización para Pantallas 1280x720 (Widescreen / Tablets Landscape) */
+@media screen and (max-height: 760px) and (min-width: 1024px) {
+  .screen {
+    padding: 10px 20px;
+    justify-content: center;
+  }
+
+  .intro-logo, .final-logo {
+    width: 180px; /* Reducido para que entre todo */
+    margin-bottom: 12px;
+  }
+
+  .intro-title, .final-title {
+    font-size: 2.2rem;
+  }
+
+  .intro-subtitle {
+    margin: 4px 0 8px;
+    font-size: 1.1rem;
+  }
+
+  .intro-text, .final-message {
+    font-size: 1rem;
+    margin-bottom: 10px;
+  }
+
+  .intro-badges {
+    margin: 8px 0 15px;
+    gap: 8px;
+  }
+
+  .badge {
+    padding: 8px 14px;
+    font-size: 0.85rem;
+  }
+
+  .large-btn {
+    padding: 14px 24px;
+    min-width: 200px;
+    font-size: 1.1rem;
+  }
+
+  /* Scoreboard más compacto */
+  .scoreboard {
+    padding: 8px 20px;
+  }
+
+  .brand-logo {
+    height: 38px;
+  }
+
+  .brand-title {
+    font-size: 1.1rem;
+  }
+
+  .brand-subtitle {
+    font-size: 0.8rem;
+  }
+
+  .meta-box {
+    padding: 6px 12px;
+    font-size: 0.85rem;
+  }
+
+  .score-row {
+    margin-top: 6px;
+    gap: 8px;
+  }
+
+  .team-card, .turn-card {
+    padding: 6px 12px;
+    font-size: 1.1rem;
+  }
+
+  .station-name {
+    margin-top: 4px;
+    font-size: 1.1rem;
+  }
+
+  /* Preguntas más compactas */
+  .question-container {
+    padding: 8px 24px;
+  }
+
+  .question-stack {
+    gap: 10px;
+  }
+
+  .panel {
+    padding: 12px 20px;
+    border-radius: 16px;
+  }
+
+  .turn-title {
+    font-size: 1.5rem;
+  }
+
+  .question-prompt {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+  }
+
+  .option-btn {
+    min-height: 55px;
+    padding: 10px 16px;
+    font-size: 1.1rem;
+  }
+
+  .feedback {
+    margin-top: 10px;
+    padding: 12px;
+  }
+
+  /* Video más controlado */
+  .video-wrapper {
+    max-height: 40vh;
+  }
+
+  .video-player {
+    max-height: 40vh;
+  }
+
+  .video-title {
+    font-size: 1.8rem;
+    margin-bottom: 4px;
+  }
+
+  .video-bridge {
+    font-size: 1rem;
+    margin-bottom: 8px;
+  }
+
+  .video-logo {
+    height: 60px;
+  }
+}
+
