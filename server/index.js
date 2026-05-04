@@ -31,6 +31,8 @@ const limiter = rateLimit({
 app.use('/api/', limiter);
 
 // ========== HELMET (CSP) ==========
+// Desactivado temporalmente porque fuerza HTTPS en redes locales
+/*
 app.use(helmet({
   crossOriginResourcePolicy: { policy: "cross-origin" },
   contentSecurityPolicy: {
@@ -42,10 +44,12 @@ app.use(helmet({
       connectSrc: ["'self'", "capacitor://localhost", "http://localhost:3001", "http://192.168.0.6:3001"],
       fontSrc: ["'self'", "https://fonts.gstatic.com"],
       objectSrc: ["'none'"],
-      mediaSrc: ["'self'", "blob:", "data:", "http://192.168.0.6:3001"]
+      mediaSrc: ["'self'", "blob:", "data:", "http://192.168.0.6:3001"],
+      upgradeInsecureRequests: null
     },
   },
 }));
+*/
 
 // ========== CORS ==========
 const envOrigins = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : [];
